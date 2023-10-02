@@ -1,0 +1,17 @@
+@page
+@model NewIssueModel
+@{
+    ViewData["Title"] = "New Issue";
+}
+
+<h1>New Issue</h1>
+<form asp-page="New">
+    <div class="row">
+        <div class="col-8">
+            <partial name="_IssueForm" model="Model.Issue" />
+        </div>
+        <div class="col-4">
+            Assignees, statuses, etc go here
+        </div>
+    </div>
+</form>

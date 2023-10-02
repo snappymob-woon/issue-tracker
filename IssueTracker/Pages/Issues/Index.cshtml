@@ -1,0 +1,90 @@
+@page "{id?}/{handler?}"
+@using IssueTracker.Atrributes
+@model IssueModel
+@{
+    ViewData["Title"] = Model.CurrentIssue.Title;
+}
+
+<div>
+    <div class="d-flex gap-2 justify-content-between align-items-center">
+        <h2>@Model.CurrentIssue.Title <span class="text-muted">#@Model.CurrentIssue.Id</span></h2>
+        <a asp-page="Edit" asp-route-id="@Model.CurrentIssue.Id" class="btn btn-primary">Edit</a>
+    </div>
+    <p style="font-size: smaller;">opened by @Model.CurrentIssue.Author?.UserName</p>
+    <div class="row m-2">
+        <div class="col-8">
+            <div class="border rounded p-3 my-2 bg-light issue-description">@Model.CurrentIssue.Description</div>
+            <div class="d-flex flex-column gap-2">
+                @if (Model.CurrentIssue.Comments.Count > 0)
+                {
+                    @foreach (var comment in Model.CurrentIssue.Comments)
+                    {
+                        <div class="border rounded">
+                            <div class="p-2 rounded-top border-bottom bg-light">
+                                @(comment.User?.UserName ?? "Unknown") <span style="font-size: smaller;" class="text-muted">on
+                                    @comment.UpdatedDate</span>
+                            </div>
+                            <div class="p-2">@comment.Body</div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <h4 class="text-muted text-center">No Comments</h4>
+                }
+
+                <div class="my-3">
+                    <form asp-page="Index" asp-page-handler="Comment">
+                        <div class="mb-2">
+                            <label asp-for="NewCommentCommand.Body">Comment</label>
+                            <textarea class="form-control" asp-for="NewCommentCommand.Body" rows="6"></textarea>
+                        </div>
+                        <input value="@Model.CurrentIssue.Id" asp-for="NewCommentCommand.IssueId">
+                        <button type="submit" class="btn btn-primary">Post</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="mb-3 border rounded m-2">
+                <div class="rounded-top border-bottom bg-light fw-bold p-2">Assignees</div>
+                <div class="p-2">
+                    @if (Model.CurrentIssue.Assignees.Count > 0)
+                    {
+                        <ul class="m-0">
+                            @foreach (var assignee in Model.CurrentIssue.Assignees)
+                            {
+                                <li>@assignee.UserName</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <div class="text-muted">No assignees</div>
+                    }
+                </div>
+            </div>
+            <div class="mb-3 border rounded m-2">
+                <div class="rounded-top border-bottom bg-light fw-bold p-2">Status</div>
+                <div class="p-2">
+                    <span
+                        class="badge bg-@(ColorHelper.GetColorAttributeValue<Issue.IssueStatus>(Model.CurrentIssue.Status))">@Model.CurrentIssue.Status</span>
+                </div>
+            </div>
+            <div class="mb-3 border rounded m-2">
+                <div class="rounded-top border-bottom bg-light fw-bold p-2">Tags</div>
+                <div class="p-2">
+                    <span class="badge bg-primary">@Model.CurrentIssue.Status</span>
+                    <span class="badge bg-primary">@Model.CurrentIssue.Status</span>
+                    <span class="badge bg-primary">@Model.CurrentIssue.Status</span>
+                    <span class="badge bg-primary">@Model.CurrentIssue.Status</span>
+                    <span class="badge bg-primary">@Model.CurrentIssue.Status</span>
+                    <span class="badge bg-primary">@Model.CurrentIssue.Status</span>
+                    <span class="badge bg-primary">@Model.CurrentIssue.Status</span>
+                    <span class="badge bg-primary">@Model.CurrentIssue.Status</span>
+                    <span class="badge bg-primary">@Model.CurrentIssue.Status</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

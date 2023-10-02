@@ -1,0 +1,5 @@
+.issue-description {
+    min-height: 300px;
+    max-height: 600px;
+    white-space: pre-wrap;
+}
