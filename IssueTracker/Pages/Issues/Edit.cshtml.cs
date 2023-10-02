@@ -8,18 +8,21 @@ public class EditIssueModel : PageModel
     [BindProperty]
     public EditIssueCommand CurrentIssue { get; set; }
     public SelectList AvailableAssignees { get; set; }
+    public SelectList AvailableTags { get; set; }
 
     private readonly IMapper _mapper;
     private readonly ILogger<EditIssueModel> _logger;
     private readonly IssueService _issueService;
     private readonly UserService _userService;
+    private readonly IssueTagService _issueTagService;
 
-    public EditIssueModel(ILoggerFactory factory, IMapper mapper, IssueService issueService, UserService userService)
+    public EditIssueModel(ILoggerFactory factory, IMapper mapper, IssueService issueService, UserService userService, IssueTagService issueTagService)
     {
         _logger = factory.CreateLogger<EditIssueModel>();
         _mapper = mapper;
         _issueService = issueService;
         _userService = userService;
+        _issueTagService = issueTagService;
     }
 
     public async Task<IActionResult> OnGetAsync(int? id)
@@ -35,6 +38,9 @@ public class EditIssueModel : PageModel
 
         AvailableAssignees = new SelectList(assignees, "Id", "UserName");
 
+        var tags = await _issueTagService.GetIssueTags();
+        AvailableTags = new SelectList(tags, "Id", "Label");
+
         CurrentIssue = _mapper.Map<EditIssueCommand>(issue);
 
         return Page();
@@ -42,7 +48,6 @@ public class EditIssueModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(int? id)
     {
-        _logger.LogDebug(string.Join(',', CurrentIssue.AssigneeIds));
         CurrentIssue.Id = id.Value;
         await _issueService.UpdateIssue(CurrentIssue);
 

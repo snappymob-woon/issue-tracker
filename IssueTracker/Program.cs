@@ -12,6 +12,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IssueService>();
 builder.Services.AddScoped<CommentService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IssueTagService>();
 
 var app = builder.Build();
 

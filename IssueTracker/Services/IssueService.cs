@@ -71,6 +71,7 @@ public class IssueService
                                 .Include(x => x.Comments)
                                 .Include(x => x.Author)
                                 .Include(x => x.Assignees)
+                                .Include(x => x.Tags)
                                 .FirstOrDefaultAsync(i => i.Id == id);
 
         if (issue is null)
@@ -95,6 +96,9 @@ public class IssueService
 
         var assignees = await _context.Users.Where(x => cmd.AssigneeIds.Select(y => int.Parse(y)).Contains(x.Id)).ToListAsync();
         issue.Assignees = assignees;
+
+        var tags = await _context.IssueTags.Where(x => cmd.TagIds.Select(y => int.Parse(y)).Contains(x.Id)).ToListAsync();
+        issue.Tags = tags;
 
         await _context.SaveChangesAsync();
     }

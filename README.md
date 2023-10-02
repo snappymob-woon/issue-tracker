@@ -19,11 +19,17 @@ I also try to incorporate as much topics I read in ASP.Net Core in Action such a
 ## Getting Started
 > Note: I used the dotnet CLI as I developed this with VS Code.
 1. Run `dotnet restore` to install required packages
-2. Run `dotnet ef database update` to update the database with all migrations
-3. Run `dotnet watch` to start hot-reload server.
-4. Start playing around.
+1. Run `dotnet ef database update` to update the database with all migrations
+1. Run `dotnet watch` to start hot-reload server.
+1. Start playing around.
 
 ## Recipes
+
+### Creating and registering a service
+1. A service needs to be explicitly be registered before it can be injected and used.
+1. Create a service in the `Services` folder.
+1. Register it in `Program.cs` with your declared `WebApplicationBuilder`. E.g. `builder.Services.AddScoped<IssueService>();`
+> Note: There are multiple `AddX<>()` functions such as `AddScoped<>()`, `AddSingleton<>()` and `AddTransient<>()` that have declares how the service is treated over the lifespan of the application. Please read page 205 of ASP.NET Core in Action Third Edition to know more (or just Google it).
 
 ### Adding new Model
 

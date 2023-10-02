@@ -74,15 +74,17 @@
             <div class="mb-3 border rounded m-2">
                 <div class="rounded-top border-bottom bg-light fw-bold p-2">Tags</div>
                 <div class="p-2">
-                    <span class="badge bg-primary">@Model.CurrentIssue.Status</span>
-                    <span class="badge bg-primary">@Model.CurrentIssue.Status</span>
-                    <span class="badge bg-primary">@Model.CurrentIssue.Status</span>
-                    <span class="badge bg-primary">@Model.CurrentIssue.Status</span>
-                    <span class="badge bg-primary">@Model.CurrentIssue.Status</span>
-                    <span class="badge bg-primary">@Model.CurrentIssue.Status</span>
-                    <span class="badge bg-primary">@Model.CurrentIssue.Status</span>
-                    <span class="badge bg-primary">@Model.CurrentIssue.Status</span>
-                    <span class="badge bg-primary">@Model.CurrentIssue.Status</span>
+                    @if (Model.CurrentIssue.Tags.Count > 0)
+                    {
+                        @foreach (var tag in Model.CurrentIssue.Tags)
+                        {
+                            <span class="badge bg-@tag.Color">@tag.Label</span>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-muted">No tags</div>
+                    }
                 </div>
             </div>
         </div>

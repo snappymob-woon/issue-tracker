@@ -37,6 +37,11 @@
                 </select>
             </div>
             <div class="mb-3">
+                <label asp-for="CurrentIssue.TagIds" class="form-label"></label>
+                <select asp-for="CurrentIssue.TagIds" asp-items="Model.AvailableTags" class="form-select">
+                </select>
+            </div>
+            <div class="mb-3">
                 <label class="form-label" asp-for="CurrentIssue.Status"></label>
                 <select class="form-select" asp-for="CurrentIssue.Status"
                     asp-items="Html.GetEnumSelectList<Issue.IssueStatus>()"></select>
