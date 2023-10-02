@@ -35,7 +35,7 @@ public class IssueService
 
         if (filterInput.AssigneeId.HasValue)
         {
-            query = query.Where(x => x.Author.Id == filterInput.AssigneeId);
+            query = query.Where(x => x.Assignees.Any(assignee => assignee.Id == filterInput.AssigneeId.Value));
         }
 
         if (filterInput.StartDate.HasValue)
@@ -50,6 +50,7 @@ public class IssueService
 
         return await query
             .Include(x => x.Author)
+            .Include(x => x.Assignees)
             .Select(x => _mapper.Map<IssueSummaryViewModel>(x))
             .ToListAsync();
     }

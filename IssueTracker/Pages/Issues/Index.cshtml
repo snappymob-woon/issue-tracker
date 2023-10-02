@@ -10,7 +10,7 @@
         <h2>@Model.CurrentIssue.Title <span class="text-muted">#@Model.CurrentIssue.Id</span></h2>
         <a asp-page="Edit" asp-route-id="@Model.CurrentIssue.Id" class="btn btn-primary">Edit</a>
     </div>
-    <p style="font-size: smaller;">opened by @Model.CurrentIssue.Author?.UserName</p>
+    <p style="font-size: smaller;">opened by @Model.CurrentIssue.Author?.UserName on @Model.CurrentIssue.CreatedDate</p>
     <div class="row m-2">
         <div class="col-8">
             <div class="border rounded p-3 my-2 bg-light issue-description">@Model.CurrentIssue.Description</div>
