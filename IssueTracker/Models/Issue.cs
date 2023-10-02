@@ -30,5 +30,6 @@ public class Issue : EntityBase<int>
     public string? Description { get; set; }
     public List<User> Assignees { get; set; } = new List<User>();
     public List<Comment> Comments { get; set; } = new List<Comment>();
+    public List<IssueTag> Tags { get; set; } = new List<IssueTag>();
     public int StoryPoints { get; set; }
 }

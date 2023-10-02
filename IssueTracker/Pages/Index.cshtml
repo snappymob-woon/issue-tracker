@@ -7,26 +7,31 @@
 }
 
 <form asp-page="Index" method="get" class="d-flex gap-2 justify-content-between">
-    <div class="row row-cols-auto g-3">
+    <div class="row row-cols-auto g-3 align-items-end mb-4">
         <div class="col-auto">
+            <label asp-for="FilterInput.Query"></label>
             <input asp-for="FilterInput.Query" class="form-control" placeholder="Search..." />
         </div>
         <div class="col-auto">
+            <label asp-for="FilterInput.AssigneeId"></label>
             <select placeholder="Assignee" class="form-select" asp-for="FilterInput.AssigneeId"
                 asp-items="Model.AvailableAssignees">
                 <option value=""></option>
             </select>
         </div>
         <div class="col-auto">
+            <label asp-for="FilterInput.IssueStatus"></label>
             <select placeholder="Status" class="form-select" asp-for="FilterInput.IssueStatus"
                 asp-items="Html.GetEnumSelectList<Issue.IssueStatus>()">
                 <option value=""></option>
             </select>
         </div>
         <div class="col-auto">
+            <label asp-for="FilterInput.StartDate"></label>
             <input asp-for="FilterInput.StartDate" class="form-control" placeholder="Start date" />
         </div>
         <div class="col-auto">
+            <label asp-for="FilterInput.EndDate"></label>
             <input asp-for="FilterInput.EndDate" class="form-control" placeholder="End date" />
         </div>
         <div class="col-auto">
@@ -35,7 +40,7 @@
         <div class="col-auto">
             @if (User.Identity.IsAuthenticated)
             {
-                <a class="btn btn-success mb-4" asp-page="Issues/New">Add Issue</a>
+                <a class="btn btn-success" asp-page="Issues/New">Add Issue</a>
             }
         </div>
     </div>
