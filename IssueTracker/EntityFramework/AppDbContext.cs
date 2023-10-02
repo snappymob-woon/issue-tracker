@@ -69,6 +69,8 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        
+        GlobalQueryFilterService.ApplyGlobalQueryFilters(builder);
 
         builder
             .Entity<Issue>()
@@ -79,6 +81,5 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
             .Entity<User>()
             .HasMany(p => p.AuthoredIssues)
             .WithOne(p => p.Author);
-
     }
 }

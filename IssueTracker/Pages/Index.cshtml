@@ -6,20 +6,40 @@
     ViewData["Title"] = "Home page";
 }
 
-<form asp-page="Index" asp-page-handler="Filter" class="d-flex gap-2 justify-content-between">
-    <div class="row">
+<form asp-page="Index" method="get" class="d-flex gap-2 justify-content-between">
+    <div class="row row-cols-auto g-3">
         <div class="col-auto">
-            <input type="text" class="form-control" placeholder="Search..." />
+            <input asp-for="FilterInput.Query" class="form-control" placeholder="Search..." />
         </div>
         <div class="col-auto">
-            <select asp-for="FilterInput.AssigneeId" asp-items="Model.AvailableAssignees"></select>
+            <select placeholder="Assignee" class="form-select" asp-for="FilterInput.AssigneeId"
+                asp-items="Model.AvailableAssignees">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <select placeholder="Status" class="form-select" asp-for="FilterInput.IssueStatus"
+                asp-items="Html.GetEnumSelectList<Issue.IssueStatus>()">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <input asp-for="FilterInput.StartDate" class="form-control" placeholder="Start date" />
+        </div>
+        <div class="col-auto">
+            <input asp-for="FilterInput.EndDate" class="form-control" placeholder="End date" />
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+        <div class="col-auto">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a class="btn btn-success mb-4" asp-page="Issues/New">Add Issue</a>
+            }
         </div>
     </div>
 
-    @if (User.Identity.IsAuthenticated)
-    {
-        <a class="btn btn-primary mb-4" asp-page="Issues/New">Add Issue</a>
-    }
     @* @User.FindFirstValue(ClaimTypes.Name) *@
     @* @User.Identity.Name *@
 </form>
@@ -39,11 +59,15 @@
                     @issue.Title
                     <span class="text-muted">#@issue.Id</span>
                 </a>
-                <div style="font-size: small;" class="text-muted">Opened by @issue.AuthorName</div>
-                <div style="font-size: smaller;" class="text-muted">Last updated on @issue.UpdatedDate</div>
-
-                <span
-                    class="badge bg-@(ColorHelper.GetColorAttributeValue<Issue.IssueStatus>(issue.Status))">@issue.Status</span>
+                <div style="font-size: small;" class="text-muted">
+                    Opened by @issue.AuthorName on @issue.CreatedDate.ToShortDateString()
+                </div>
+                <div style="font-size: smaller;" class="text-muted d-flex gap-2">
+                    Last updated on @issue.UpdatedDate.ToShortDateString()
+                </div>
+                <span class="badge bg-@(ColorHelper.GetColorAttributeValue<Issue.IssueStatus>(issue.Status))">
+                    @issue.Status
+                </span>
             </li>
         }
     </ul>

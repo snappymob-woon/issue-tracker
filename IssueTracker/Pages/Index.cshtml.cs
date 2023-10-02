@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -15,7 +17,7 @@ public class IndexModel : PageModel
     private readonly UserService _userService;
     public IEnumerable<SelectListItem> AvailableAssignees { get; set; }
 
-    [BindProperty]
+    [BindProperty(SupportsGet = true)]
     public FilterInputModel FilterInput { get; set; }
 
     public IndexModel(ILogger<IndexModel> logger, IMapper mapper, IssueService issueService, UserService userService)
@@ -28,7 +30,7 @@ public class IndexModel : PageModel
 
     public async void OnGet()
     {
-        Issues = await _issueService.GetIssues();
+        Issues = await _issueService.GetIssues(FilterInput);
         AvailableAssignees = (await _userService.GetUsersAsync()).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.UserName });
     }
 
@@ -37,7 +39,9 @@ public class IndexModel : PageModel
         public string? Query { get; set; }
         public int? AssigneeId { get; set; }
         public Issue.IssueStatus? IssueStatus { get; set; }
+        [DataType(DataType.Date)]
         public DateTime? StartDate { get; set; }
+        [DataType(DataType.Date)]
         public DateTime? EndDate { get; set; }
     }
 }

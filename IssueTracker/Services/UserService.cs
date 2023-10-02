@@ -18,7 +18,6 @@ public class UserService
     public async Task<List<UserSummaryViewModel>> GetUsersAsync()
     {
         return await _context.Users
-            .Where(x => x.IsDeleted == false)
             .Select(x => _mapper.Map<UserSummaryViewModel>(x))
             .ToListAsync();
     }

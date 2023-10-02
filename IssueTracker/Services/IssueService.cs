@@ -1,6 +1,9 @@
 using System.Net.Mail;
 using System.Runtime.CompilerServices;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
 public class IssueService
@@ -16,10 +19,36 @@ public class IssueService
         _mapper = mapper;
     }
 
-    public async Task<List<IssueSummaryViewModel>> GetIssues()
+    public async Task<List<IssueSummaryViewModel>> GetIssues(IssueTracker.Pages.IndexModel.FilterInputModel? filterInput)
     {
-        return await _context.Issues
-            .Where(x => x.IsDeleted == false)
+        var query = _context.Issues.AsQueryable();
+
+        if (filterInput.IssueStatus.HasValue)
+        {
+            query = query.Where(x => x.Status == filterInput.IssueStatus.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(filterInput.Query))
+        {
+            query = query.Where(x => x.Title.ToLower().Contains(filterInput.Query.ToLower()) || x.Description.ToLower().Contains(filterInput.Query.ToLower()));
+        }
+
+        if (filterInput.AssigneeId.HasValue)
+        {
+            query = query.Where(x => x.Author.Id == filterInput.AssigneeId);
+        }
+
+        if (filterInput.StartDate.HasValue)
+        {
+            query = query.Where(x => x.CreatedDate.Date >= filterInput.StartDate.Value.Date);
+        }
+
+        if (filterInput.EndDate.HasValue)
+        {
+            query = query.Where(x => x.CreatedDate.Date <= filterInput.EndDate.Value.Date);
+        }
+
+        return await query
             .Include(x => x.Author)
             .Select(x => _mapper.Map<IssueSummaryViewModel>(x))
             .ToListAsync();
@@ -39,10 +68,10 @@ public class IssueService
     public async Task<Issue> GetIssue(int id)
     {
         var issue = await _context.Issues
-                                        .Include(x => x.Comments)
-                                        .Include(x => x.Author)
-                                        .Include(x => x.Assignees)
-                                        .FirstOrDefaultAsync(i => i.Id == id);
+                                .Include(x => x.Comments)
+                                .Include(x => x.Author)
+                                .Include(x => x.Assignees)
+                                .FirstOrDefaultAsync(i => i.Id == id);
 
         if (issue is null)
         {
@@ -66,6 +95,20 @@ public class IssueService
 
         var assignees = await _context.Users.Where(x => cmd.AssigneeIds.Select(y => int.Parse(y)).Contains(x.Id)).ToListAsync();
         issue.Assignees = assignees;
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteIssue(int id)
+    {
+        var issue = await _context.Issues.FirstOrDefaultAsync(x => x.Id == id);
+
+        if (issue is null)
+        {
+            throw new Exception("The issue is not found");
+        }
+
+        issue.IsDeleted = true;
 
         await _context.SaveChangesAsync();
     }

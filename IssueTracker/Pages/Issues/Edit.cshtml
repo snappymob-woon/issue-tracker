@@ -4,7 +4,12 @@
     ViewData["title"] = $"Editing {Model.CurrentIssue.Title}";
 }
 
-<h1>Edit Issue</h1>
+<div class="d-flex gap-2 justify-content-between align-items-center">
+    <h2>Edit Issue</h2>
+    <form asp-page="Index" asp-route-id="@Model.CurrentIssue.Id" asp-page-handler="Delete">
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+</div>
 <form asp-page="Edit">
     <div class="row">
         <div class="col-8">
@@ -19,12 +24,6 @@
                 <span asp-validation-for="CurrentIssue.Description"></span>
             </div>
             <div class="mb-3">
-                <label class="form-label" asp-for="CurrentIssue.Status"></label>
-                <select class="form-control" asp-for="CurrentIssue.Status"
-                    asp-items="Html.GetEnumSelectList<Issue.IssueStatus>()"></select>
-                <span asp-validation-for="CurrentIssue.Status"></span>
-            </div>
-            <div class="mb-3">
                 <label class="form-label" asp-for="CurrentIssue.StoryPoints"></label>
                 <input class="form-control" asp-for="CurrentIssue.StoryPoints">
                 <span asp-validation-for="CurrentIssue.StoryPoints"></span>
@@ -34,17 +33,14 @@
         <div class="col-4">
             <div class="mb-3">
                 <label asp-for="CurrentIssue.AssigneeIds" class="form-label"></label>
-                <select asp-for="CurrentIssue.AssigneeIds" asp-items="Model.AvailableAssignees" class="form-control">
+                <select asp-for="CurrentIssue.AssigneeIds" asp-items="Model.AvailableAssignees" class="form-select">
                 </select>
             </div>
             <div class="mb-3">
-                <label class="form-label">Status</label>
-                <div class="form-control">
-                    🎉
-                </div>
-                @* <select class="form-control" asp-for="Status"
-                asp-items="Html.GetEnumSelectList<Issue.IssueStatus>()"></select> *@
-                @* <span asp-validation-for="Status"></span> *@
+                <label class="form-label" asp-for="CurrentIssue.Status"></label>
+                <select class="form-select" asp-for="CurrentIssue.Status"
+                    asp-items="Html.GetEnumSelectList<Issue.IssueStatus>()"></select>
+                <span asp-validation-for="CurrentIssue.Status"></span>
             </div>
         </div>
     </div>

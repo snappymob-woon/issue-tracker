@@ -32,11 +32,7 @@ public class EditIssueModel : PageModel
             throw new Exception("This issue is not found");
 
         var assignees = await _userService.GetUsersAsync();
-        foreach (var assignee in assignees)
-        {
-            _logger.LogInformation(assignee.UserName);
-        }
-        // AvailableAssignees = assignees.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.UserName }).ToList()
+
         AvailableAssignees = new SelectList(assignees, "Id", "UserName");
 
         CurrentIssue = _mapper.Map<EditIssueCommand>(issue);
