@@ -1,47 +1,24 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace IssueTracker.Pages;
-
-public class IndexModel : PageModel
+public class ProjectModel : PageModel
 {
-    public List<IssueSummaryViewModel> Issues;
-    private readonly ILogger<IndexModel> _logger;
+    private readonly ILogger<ProjectModel> _logger;
     private readonly IMapper _mapper;
-    private readonly IssueService _issueService;
-    private readonly UserService _userService;
-    public IEnumerable<SelectListItem> AvailableAssignees { get; set; }
+    private readonly ProjectService _projectService;
+    public List<Project> Projects { get; set; } = new List<Project>();
 
-    [BindProperty(SupportsGet = true)]
-    public FilterInputModel FilterInput { get; set; }
-
-    public IndexModel(ILogger<IndexModel> logger, IMapper mapper, IssueService issueService, UserService userService)
+    public ProjectModel(IMapper mapper, ILoggerFactory factory, ProjectService projectService)
     {
-        _logger = logger;
+        _logger = factory.CreateLogger<ProjectModel>();
         _mapper = mapper;
-        _issueService = issueService;
-        _userService = userService;
+        _projectService = projectService;
     }
 
-    public async void OnGet()
+    public async Task OnGetAsync()
     {
-        Issues = await _issueService.GetIssues(FilterInput);
-        AvailableAssignees = (await _userService.GetUsersAsync()).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.UserName });
-    }
-
-    public class FilterInputModel
-    {
-        public string? Query { get; set; }
-        public int? AssigneeId { get; set; }
-        public Issue.IssueStatus? IssueStatus { get; set; }
-        [DataType(DataType.Date)]
-        public DateTime? StartDate { get; set; }
-        [DataType(DataType.Date)]
-        public DateTime? EndDate { get; set; }
+        Projects = await _projectService.GetProjectsAsync();
     }
 }

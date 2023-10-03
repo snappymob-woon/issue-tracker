@@ -6,20 +6,13 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
-public class IssueService
+public class IssueService : BaseService<IssueService>
 {
-    private readonly IMapper _mapper;
-    private readonly AppDbContext _context;
-    private readonly ILogger _logger;
-
-    public IssueService(AppDbContext context, ILoggerFactory factory, IMapper mapper)
+    public IssueService(AppDbContext context, ILoggerFactory factory, IMapper mapper) : base(context, factory, mapper)
     {
-        _context = context;
-        _logger = factory.CreateLogger<IssueService>();
-        _mapper = mapper;
     }
 
-    public async Task<List<IssueSummaryViewModel>> GetIssues(IssueTracker.Pages.IndexModel.FilterInputModel? filterInput)
+    public async Task<List<IssueSummaryViewModel>> GetIssues(IssueTracker.Pages.Issues.IssueModel.FilterInputModel filterInput)
     {
         var query = _context.Issues.AsQueryable();
 
@@ -57,11 +50,24 @@ public class IssueService
 
     public async Task<int> CreateIssue(CreateIssueCommand cmd)
     {
+        var project = await _context.Projects.FindAsync(cmd.ProjectId);
+        if (project is null)
+        {
+            throw new Exception("Project cannot be found");
+        }
+
         var author = await _context.Users.FindAsync(cmd.AuthorId);
         var issue = _mapper.Map<Issue>(cmd);
         issue.Author = author;
 
-        _context.Add(issue);
+        var assignees = await _context.Users.Where(x => cmd.AssigneeIds.Select(y => int.Parse(y)).Contains(x.Id)).ToListAsync();
+        issue.Assignees = assignees;
+
+        var tags = await _context.IssueTags.Where(x => cmd.TagIds.Select(y => int.Parse(y)).Contains(x.Id)).ToListAsync();
+        issue.Tags = tags;
+
+        project.Issues.Add(issue);
+
         await _context.SaveChangesAsync();
         return issue.Id;
     }

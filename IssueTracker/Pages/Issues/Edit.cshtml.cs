@@ -51,6 +51,6 @@ public class EditIssueModel : PageModel
         CurrentIssue.Id = id.Value;
         await _issueService.UpdateIssue(CurrentIssue);
 
-        return RedirectToPage("Index", new { id = CurrentIssue.Id });
+        return RedirectToPage("Detail", new { id = CurrentIssue.Id });
     }
 }

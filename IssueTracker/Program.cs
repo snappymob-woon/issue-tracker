@@ -13,6 +13,7 @@ builder.Services.AddScoped<IssueService>();
 builder.Services.AddScoped<CommentService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IssueTagService>();
+builder.Services.AddScoped<ProjectService>();
 
 var app = builder.Build();
 

@@ -1,16 +1,9 @@
 using AutoMapper;
 
-public class CommentService
+public class CommentService : BaseService<CommentService>
 {
-    private readonly IMapper _mapper;
-    private readonly ILogger<CommentService> _logger;
-    private readonly AppDbContext _context;
-
-    public CommentService(IMapper mapper, ILoggerFactory factory, AppDbContext context)
+    public CommentService(AppDbContext context, ILoggerFactory factory, IMapper mapper) : base(context, factory, mapper)
     {
-        _mapper = mapper;
-        _logger = factory.CreateLogger<CommentService>();
-        _context = context;
     }
 
     public async Task<int> CreateComment(CreateCommentCommand cmd)
@@ -25,8 +18,9 @@ public class CommentService
 
         _logger.LogInformation($"====== {cmd.AuthorId}");
         var author = await _context.Users.FindAsync(cmd.AuthorId);
-        
-        if (author is null) {
+
+        if (author is null)
+        {
             throw new Exception("User not found");
         }
 

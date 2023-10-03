@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IssueTracker.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230929033518_AddIdentitySchema")]
-    partial class AddIdentitySchema
+    [Migration("20231003063535_InitialSchema")]
+    partial class InitialSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,7 +41,7 @@ namespace IssueTracker.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -71,6 +71,9 @@ namespace IssueTracker.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
@@ -88,7 +91,161 @@ namespace IssueTracker.Migrations
 
                     b.HasIndex("AuthorId");
 
+                    b.HasIndex("ProjectId");
+
                     b.ToTable("Issues");
+                });
+
+            modelBuilder.Entity("IssueIssueTag", b =>
+                {
+                    b.Property<int>("IssuesId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TagsId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("IssuesId", "TagsId");
+
+                    b.HasIndex("TagsId");
+
+                    b.ToTable("IssueIssueTag");
+                });
+
+            modelBuilder.Entity("IssueTag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("IssueTags");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = -100,
+                            Color = "secondary",
+                            CreatedDate = new DateTime(2023, 10, 3, 14, 35, 35, 652, DateTimeKind.Local).AddTicks(2310),
+                            Description = "Indicates an unexpected problem or unintended behavior",
+                            IsDeleted = false,
+                            Label = "bug",
+                            Slug = "bug",
+                            UpdatedDate = new DateTime(2023, 10, 3, 14, 35, 35, 652, DateTimeKind.Local).AddTicks(2340)
+                        },
+                        new
+                        {
+                            Id = -101,
+                            Color = "secondary",
+                            CreatedDate = new DateTime(2023, 10, 3, 14, 35, 35, 652, DateTimeKind.Local).AddTicks(2360),
+                            Description = "Indicates a need for improvements or additions to documentation",
+                            IsDeleted = false,
+                            Label = "documentation",
+                            Slug = "documentation",
+                            UpdatedDate = new DateTime(2023, 10, 3, 14, 35, 35, 652, DateTimeKind.Local).AddTicks(2360)
+                        },
+                        new
+                        {
+                            Id = -102,
+                            Color = "secondary",
+                            CreatedDate = new DateTime(2023, 10, 3, 14, 35, 35, 652, DateTimeKind.Local).AddTicks(2380),
+                            Description = "Indicates similar issues, pull requests, or discussions",
+                            IsDeleted = false,
+                            Label = "duplicate",
+                            Slug = "duplicate",
+                            UpdatedDate = new DateTime(2023, 10, 3, 14, 35, 35, 652, DateTimeKind.Local).AddTicks(2380)
+                        },
+                        new
+                        {
+                            Id = -103,
+                            Color = "secondary",
+                            CreatedDate = new DateTime(2023, 10, 3, 14, 35, 35, 652, DateTimeKind.Local).AddTicks(2390),
+                            Description = "Indicates new feature requests",
+                            IsDeleted = false,
+                            Label = "enhancement",
+                            Slug = "enhancement",
+                            UpdatedDate = new DateTime(2023, 10, 3, 14, 35, 35, 652, DateTimeKind.Local).AddTicks(2390)
+                        },
+                        new
+                        {
+                            Id = -104,
+                            Color = "secondary",
+                            CreatedDate = new DateTime(2023, 10, 3, 14, 35, 35, 652, DateTimeKind.Local).AddTicks(2400),
+                            Description = "Indicates a good issue for first-time contributors",
+                            IsDeleted = false,
+                            Label = "good first issue",
+                            Slug = "good-first-issue",
+                            UpdatedDate = new DateTime(2023, 10, 3, 14, 35, 35, 652, DateTimeKind.Local).AddTicks(2400)
+                        },
+                        new
+                        {
+                            Id = -105,
+                            Color = "secondary",
+                            CreatedDate = new DateTime(2023, 10, 3, 14, 35, 35, 652, DateTimeKind.Local).AddTicks(2410),
+                            Description = "Indicates that a maintainer wants help on an issue or pull request",
+                            IsDeleted = false,
+                            Label = "help wanted",
+                            Slug = "help-wanted",
+                            UpdatedDate = new DateTime(2023, 10, 3, 14, 35, 35, 652, DateTimeKind.Local).AddTicks(2410)
+                        },
+                        new
+                        {
+                            Id = -106,
+                            Color = "secondary",
+                            CreatedDate = new DateTime(2023, 10, 3, 14, 35, 35, 652, DateTimeKind.Local).AddTicks(2420),
+                            Description = "Indicates that an issue, pull request, or discussion is no longer relevant",
+                            IsDeleted = false,
+                            Label = "invalid",
+                            Slug = "invalid",
+                            UpdatedDate = new DateTime(2023, 10, 3, 14, 35, 35, 652, DateTimeKind.Local).AddTicks(2420)
+                        },
+                        new
+                        {
+                            Id = -107,
+                            Color = "secondary",
+                            CreatedDate = new DateTime(2023, 10, 3, 14, 35, 35, 652, DateTimeKind.Local).AddTicks(2430),
+                            Description = "Indicates that an issue, pull request, or discussion needs more information",
+                            IsDeleted = false,
+                            Label = "question",
+                            Slug = "question",
+                            UpdatedDate = new DateTime(2023, 10, 3, 14, 35, 35, 652, DateTimeKind.Local).AddTicks(2430)
+                        },
+                        new
+                        {
+                            Id = -108,
+                            Color = "secondary",
+                            CreatedDate = new DateTime(2023, 10, 3, 14, 35, 35, 652, DateTimeKind.Local).AddTicks(2440),
+                            Description = "Indicates that work won't continue on an issue, pull request, or discussion",
+                            IsDeleted = false,
+                            Label = "wontfix",
+                            Slug = "wontfix",
+                            UpdatedDate = new DateTime(2023, 10, 3, 14, 35, 35, 652, DateTimeKind.Local).AddTicks(2440)
+                        });
                 });
 
             modelBuilder.Entity("IssueUser", b =>
@@ -236,6 +393,33 @@ namespace IssueTracker.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Project", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Projects");
+                });
+
             modelBuilder.Entity("User", b =>
                 {
                     b.Property<int>("Id")
@@ -318,7 +502,9 @@ namespace IssueTracker.Migrations
 
                     b.HasOne("User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -329,7 +515,30 @@ namespace IssueTracker.Migrations
                         .WithMany("AuthoredIssues")
                         .HasForeignKey("AuthorId");
 
+                    b.HasOne("Project", "Project")
+                        .WithMany("Issues")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Author");
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("IssueIssueTag", b =>
+                {
+                    b.HasOne("Issue", null)
+                        .WithMany()
+                        .HasForeignKey("IssuesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IssueTag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("IssueUser", b =>
@@ -401,6 +610,11 @@ namespace IssueTracker.Migrations
             modelBuilder.Entity("Issue", b =>
                 {
                     b.Navigation("Comments");
+                });
+
+            modelBuilder.Entity("Project", b =>
+                {
+                    b.Navigation("Issues");
                 });
 
             modelBuilder.Entity("User", b =>

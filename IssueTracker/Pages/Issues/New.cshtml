@@ -1,17 +1,47 @@
-@page
+@page "{projectId}"
 @model NewIssueModel
 @{
     ViewData["Title"] = "New Issue";
 }
 
-<h1>New Issue</h1>
+<h1>New Issue for @Model.CurrentProject.Name</h1>
 <form asp-page="New">
     <div class="row">
         <div class="col-8">
-            <partial name="_IssueForm" model="Model.Issue" />
+            <div class="mb-3">
+                <label class="form-label" asp-for="Issue.Title"></label>
+                <input class="form-control" asp-for="Issue.Title">
+                <span asp-validation-for="Issue.Title"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" asp-for="Issue.Description"></label>
+                <textarea rows="8" class="form-control" asp-for="Issue.Description"></textarea>
+                <span asp-validation-for="Issue.Description"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" asp-for="Issue.StoryPoints"></label>
+                <input class="form-control" asp-for="Issue.StoryPoints">
+                <span asp-validation-for="Issue.StoryPoints"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
         </div>
         <div class="col-4">
-            Assignees, statuses, etc go here
+            <div class="mb-3">
+                <label asp-for="Issue.AssigneeIds" class="form-label"></label>
+                <select asp-for="Issue.AssigneeIds" asp-items="Model.AvailableAssignees" class="form-select">
+                </select>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Issue.TagIds" class="form-label"></label>
+                <select asp-for="Issue.TagIds" asp-items="Model.AvailableTags" class="form-select">
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" asp-for="Issue.Status"></label>
+                <select class="form-select" asp-for="Issue.Status"
+                    asp-items="Html.GetEnumSelectList<Issue.IssueStatus>()"></select>
+                <span asp-validation-for="Issue.Status"></span>
+            </div>
         </div>
     </div>
 </form>

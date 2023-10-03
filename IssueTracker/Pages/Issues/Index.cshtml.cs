@@ -1,54 +1,58 @@
-using System.Security.Claims;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace IssueTracker.Pages.Issues;
 
 public class IssueModel : PageModel
 {
     private readonly ILogger<IssueModel> _logger;
-    private readonly IHttpContextAccessor _accessor;
+    private readonly IMapper _mapper;
     private readonly IssueService _issueService;
-    private readonly CommentService _commentService;
+    private readonly UserService _userService;
+    private readonly ProjectService _projectService;
+    public IEnumerable<SelectListItem> AvailableAssignees { get; set; }
+    public ProjectSummaryViewModel CurrentProject { get; set; }
 
-    public IssueModel(ILoggerFactory factory, IHttpContextAccessor accessor, IssueService issueService, CommentService commentService)
+    [BindProperty(SupportsGet = true)]
+    public FilterInputModel FilterInput { get; set; }
+
+    public IssueModel(ILoggerFactory factory, IMapper mapper, IssueService issueService, UserService userService, ProjectService projectService)
     {
         _logger = factory.CreateLogger<IssueModel>();
-        _accessor = accessor;
+        _mapper = mapper;
         _issueService = issueService;
-        _commentService = commentService;
+        _userService = userService;
+        _projectService = projectService;
     }
 
-    public Issue CurrentIssue { get; set; }
-
-    [BindProperty]
-    public CreateCommentCommand NewCommentCommand { get; set; }
-
-    public async Task<IActionResult> OnGetAsync(int? id)
+    public async Task<IActionResult> OnGet(int projectId)
     {
-        if (!id.HasValue)
+        var project = await _projectService.GetProject(projectId);
+        if (project is null)
         {
             return RedirectToPage("../Index");
         }
 
-        CurrentIssue = await _issueService.GetIssue(id.Value);
+        ViewData["Title"] = $"Issues for {project.Name}";
 
+        CurrentProject = _mapper.Map<ProjectSummaryViewModel>(project);
+        AvailableAssignees = (await _userService.GetUsersAsync()).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.UserName });
         return Page();
     }
 
-    public async Task<IActionResult> OnPostCommentAsync()
+    public class FilterInputModel
     {
-        NewCommentCommand.AuthorId = int.Parse(_accessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-        await _commentService.CreateComment(NewCommentCommand);
-
-        return RedirectToPage("Index", new { id = NewCommentCommand.IssueId });
-    }
-
-    public async Task<IActionResult> OnPostDeleteAsync(int id)
-    {
-        await _issueService.DeleteIssue(id);
-
-        return RedirectToPage("../Index");
+        public string? Query { get; set; }
+        public int? AssigneeId { get; set; }
+        public Issue.IssueStatus? IssueStatus { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? StartDate { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? EndDate { get; set; }
     }
 }

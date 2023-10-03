@@ -24,12 +24,13 @@ public class Issue : EntityBase<int>
         Blocked
     }
 
-    public User? Author { get; set; }
+    public User Author { get; set; }
     public IssueStatus Status { get; set; }
     public required string Title { get; set; }
     public string? Description { get; set; }
     public List<User> Assignees { get; set; } = new List<User>();
     public List<Comment> Comments { get; set; } = new List<Comment>();
     public List<IssueTag> Tags { get; set; } = new List<IssueTag>();
+    public Project Project { get; set; }
     public int StoryPoints { get; set; }
 }

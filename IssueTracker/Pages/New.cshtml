@@ -1,0 +1,23 @@
+@page
+@model NewProjectModel
+@{
+    ViewData["Title"] = "New Project";
+}
+
+<form asp-page="New">
+    <div class="row">
+        <div class="col-12">
+            <div class="mb-3">
+                <label class="form-label" asp-for="ProjectModel.Name"></label>
+                <input class="form-control" asp-for="ProjectModel.Name">
+                <span asp-validation-for="ProjectModel.Name"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" asp-for="ProjectModel.Description"></label>
+                <textarea rows="8" class="form-control" asp-for="ProjectModel.Description"></textarea>
+                <span asp-validation-for="ProjectModel.Description"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</form>
